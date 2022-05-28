@@ -1,5 +1,4 @@
 """Main class create the list of websocket connections and work with them"""
-import asyncio
 import threading
 import time
 
@@ -68,7 +67,7 @@ class FatherWebSockets:
     """The main father class that handles all created clients"""
 
     def __init__(self, num_connections: int, url: str):
-        print(f"Create the list websocket connections...")
+        print("Create the list websocket connections...")
         self._clients = {f"client_{x + 1}": SyncWebSockets(url, f"client_{x + 1}") for x in range(num_connections)}
         print(f"clients: {self._clients}")
         self.start_clients()
@@ -89,6 +88,7 @@ class FatherWebSockets:
         try:
             client = self._clients[uid]
         except KeyError as e:
+            print(e)
             client = None
 
         return client
@@ -100,7 +100,7 @@ class FatherWebSockets:
             try:
                 client_ws.ping()
             except websocket.WebSocketConnectionClosedException as e:
-                print(f"Error: client: {client_id} is died. Remove from the active list")
+                print(f"Error: client: {client_id} is died. Remove from the active list: {e}")
                 # remove this client from the list
                 del self.active_clients[client_id]
                 break
@@ -117,7 +117,8 @@ if __name__ == "__main__":
     father_clients = FatherWebSockets(num, url)
 
     # 2. take the list of active connection
-    print(f"\n\n::::::: Total active clients: {len(father_clients.active_clients)} with objects: {father_clients.active_clients}")
+    print(f"\n\n::::::: Total active clients: {len(father_clients.active_clients)} with objects: "
+          f"{father_clients.active_clients}")
 
     # need to wait a little bit while all thread will be started
     time.sleep(3)
@@ -132,19 +133,19 @@ if __name__ == "__main__":
         # take client
         client: SyncWebSockets = father_clients.get_client_by_uid(f"client_{cl_num}")
         client.terminate()
-        print(f"\n\n::::::: Ping\check all clients")
+        print("\n\n::::::: Ping\\check all clients")
         time.sleep(.2)
         father_clients.check_active_clients()
         print(f"\n\n::::::: Total active clients: {len(father_clients.active_clients)}")
         time.sleep(.2)
 
     # 4. now we have only 1 active websocket let's push something there....
-    print(f"We have the last one websocket - let's ping it")
+    print("We have the last one websocket - let's ping it")
     father_clients.check_active_clients()
 
-    last_client: SyncWebSockets = father_clients.get_client_by_uid(f"client_1")
+    last_client: SyncWebSockets = father_clients.get_client_by_uid("client_1")
     last_client.send_msg("Hey! I'm the last one! Long live!")
     time.sleep(2)
     # close the last session
     last_client.terminate()
-    print(f"Thanks, we're done!")
+    print("Thanks, we're done!")
