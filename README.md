@@ -25,3 +25,5 @@ By default we run 5 websockets clients (threads) that are connected to default e
 
 # SyncWebSockets methods:
   - classic websocket methods with one termination to close the websocket...
+# Task time:
+Ovetall task time is about 2 hours.
