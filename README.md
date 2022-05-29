@@ -3,8 +3,9 @@ Create the list of websockets and work with them: ping and close one by one
 
 # Prepare environment
 1. python -m venv venv
-2. python -m pip install -r requirements.txt
-3. .\venv\Scripts\activate
+2. .\venv\Scripts\activate
+3. python -m pip install -r requirements.txt
+
 
 # Run script
 python .\client_websocket.py
